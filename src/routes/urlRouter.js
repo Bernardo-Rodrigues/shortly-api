@@ -6,6 +6,6 @@ import urlSchema from "../schemas/urlSchema.js";
 
 const urlRouter = Router();
 urlRouter.post('/urls/shorten', validateTokenMiddleware, validateSchemaMiddleware(urlSchema), createShortenUrl);
-urlRouter.get('/urls/:id', validateTokenMiddleware, getUrl);
+urlRouter.get('/urls/:id', getUrl);
 urlRouter.delete('/urls/:id', validateTokenMiddleware, deleteUrl);
 export default urlRouter;

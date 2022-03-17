@@ -23,8 +23,18 @@ export async function createShortenUrl(req, res) {
 }
 
 export async function getUrl(req, res) {
+    const { id } = req.params
 
     try {
+        const { rows: [url]} = await connection.query(`
+            SELECT  id, "shortUrl", url 
+              FROM  urls 
+             WHERE  id = $1
+        `, [id]);
+
+        if (!url) return res.sendStatus(404)
+
+        res.status(200).send(url)
     } catch (error) {
         console.log(error);
         return res.sendStatus(500);
