@@ -42,10 +42,28 @@ export async function getUrl(req, res) {
 }
 
 export async function deleteUrl(req, res) {
+    const { id } = req.params
+    const userId = res.locals.user.id
 
-        try {
-        } catch (error) {
+    try {
+        const { rows: [url]} = await connection.query(`
+            SELECT  *
+              FROM  urls 
+             WHERE  id = $1
+        `, [id]);
+
+        if (!url) return res.sendStatus(404)
+        if(url.userId !== userId) return res.sendStatus(401)
+
+        const result = await connection.query(`
+            DELETE 
+              FROM  urls 
+             WHERE  id = $1
+        `, [id]);
+
+        res.sendStatus(204)
+    } catch (error) {
         console.log(error);
         return res.sendStatus(500);
-        }
-  }
+    }
+}
