@@ -23,18 +23,26 @@ export async function createShortenUrl(req, res) {
 }
 
 export async function getUrl(req, res) {
-    const { id } = req.params
+    const { shortUrl } = req.params
 
     try {
-        const { rows: [url]} = await connection.query(`
-            SELECT  id, "shortUrl", url 
+        const { rows: [site]} = await connection.query(`
+            SELECT  * 
               FROM  urls 
-             WHERE  id = $1
-        `, [id]);
+             WHERE  "shortUrl" = $1
+        `, [shortUrl]);
 
-        if (!url) return res.sendStatus(404)
+        if (!site) return res.sendStatus(404)
+        
+        const {id, url, visitCount} = site
 
-        res.status(200).send(url)
+        await connection.query(`
+            UPDATE  urls 
+               SET  "visitCount" = $1
+             WHERE  id = $2
+        `, [(visitCount + 1), id]);
+
+        res.status(200).send({id, shortUrl, url})
     } catch (error) {
         console.log(error);
         return res.sendStatus(500);
