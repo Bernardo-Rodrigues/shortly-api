@@ -11,7 +11,7 @@ CREATE TABLE sessions (
    "userId" INTEGER NOT NULL REFERENCES users(id)
 );
 
-CREATE TABLE urls (
+CREATE TABLE links (
    id SERIAL PRIMARY KEY,
    "userId" INTEGER NOT NULL REFERENCES users(id),
    "shortUrl" TEXT NOT NULL,
