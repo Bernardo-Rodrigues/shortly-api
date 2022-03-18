@@ -34,13 +34,13 @@ export async function getUrl(req, res) {
 
         if (!site) return res.sendStatus(404)
         
-        const {id, url, visitCount} = site
+        const {id, url} = site
 
         await connection.query(`
             UPDATE  links 
-               SET  "visitCount" = $1
-             WHERE  id = $2
-        `, [(visitCount + 1), id]);
+               SET  "visitCount" = "visitCount" + 1
+             WHERE  id = $1
+        `, [ id]);
         res.redirect(url)
     } catch (error) {
         console.log(error);

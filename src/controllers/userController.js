@@ -59,7 +59,7 @@ export async function getUser(req, res) {
               links.id AS "linkId", links."shortUrl", links.url, links."visitCount" AS "linksVisitCount", 
               "visitSum"."totalUserVisits"
         FROM  users 
-        JOIN  links ON  links."userId" = users.id
+        LEFT JOIN  links ON  links."userId" = users.id
        JOIN(
               SELECT  "userId", SUM("visitCount") as "totalUserVisits"
               FROM  links
@@ -68,9 +68,11 @@ export async function getUser(req, res) {
       ) AS "visitSum" ON "visitSum"."userId" = users.id
        WHERE  users.id = $1
     `, [id]);
+    
     if(!userLinks.length) return res.send({shortenedUrls:[]})
 
     const [userObject] = userLinks
+
     
     const sanitazeUserLinks = {
       id:userObject.id,
